@@ -1,6 +1,6 @@
 import unittest
 # Import class to be tested
-from app.models import User
+from app.models import User,Role
 
 class TestUser(unittest.TestCase):
     '''
@@ -14,7 +14,8 @@ class TestUser(unittest.TestCase):
         '''
         Set up method that will run before every Test
         '''
-        self.new_user = User(password='banana')
+        self.role = Role(role_name="Fruit")
+        self.new_user = User(password='banana', role=self.role)
 
     def test_password_setter(self):
         '''

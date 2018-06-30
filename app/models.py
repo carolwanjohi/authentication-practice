@@ -31,6 +31,9 @@ class User(UserMixin,db.Model):
     # password_hash column for passwords
     password_hash = db.Column(db.String(255))
 
+    # role_id column for a User's role
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+
     @property
     def password(self):
         raise AttributeError('You cannot read the password attribute')
@@ -45,5 +48,50 @@ class User(UserMixin,db.Model):
 
     def __repr__(self):
         return f'User {self.username}'
+
+    @classmethod
+    def check_role(cls,user_id,role_id):
+        get_role = User.query.filter_by(id=user_id).filter_by(role_id=role_id).first()
+        return get_role
+
+    def save_user(self):
+        '''
+        Save instance of Review model to the session and commit it to the database
+        '''
+        db.session.add(self)
+        db.session.commit()
+
+class Role(db.Model):
+    '''
+    Role class to define a role for a user
+    '''
+
+    # Name of the table
+    __tablename__ = 'roles'
+
+    # id column that is the primary key
+    id = db.Column(db.Integer, primary_key = True)
+
+    # role_name column for a role's name
+    role_name = db.Column(db.String(255))
+
+    # virtual column to connect with foriegn key
+    users = db.relationship('User', backref='role', lazy='dynamic')
+
+    def save_role(self):
+        '''
+        Save instance of Review model to the session and commit it to the database
+        '''
+        db.session.add(self)
+        db.session.commit()
+
+    def __repr__(self):
+        return f'User {self.name}'
+
+
+
+
+
+
 
     
